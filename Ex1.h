@@ -32,6 +32,7 @@ void CaldrawHistogram(Mat& I);
 void COMImgCal(Mat& Img);
 void DrawX(Mat img, int x, int y, int offset);
 void MyLine(Mat img, Point start, Point end);
+int getOneImage();
 
 Mat& GrayScaleCal(Mat& Img);
 Mat& BinaryMaker(Mat& I, int T);
