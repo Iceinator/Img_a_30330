@@ -323,8 +323,12 @@ int highPassFilter(Mat img) {
 	GrayScaleCal(img);
 	Mat_<uchar> resized_down;
 	resize(img, resized_down, Size(640, 480), INTER_LINEAR);
-	std::vector<int> kernel = { -1, 0, 1, -1, 0, 1, -1, 0, 1 };
-	std::vector<int> kernely = { 1, 1, 1, 0, 0, 0, -1, -1, -1 };
+	std::vector<int> kernel = { -1, 0, 1,
+								-1, 0, 1, 
+								-1, 0, 1 };
+	std::vector<int> kernely = { 1, 1, 1,
+							     0, 0, 0, 
+								-1, -1, -1 };
 	std::vector<uchar> cutarrayvec = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 	cv::imshow("grayIm", resized_down);
 	int k = waitKey(0);
@@ -341,13 +345,9 @@ int highPassFilter(Mat img) {
 				}
 			}
 			for (int k = 0; k < 9; k++) {
-				sum = sum + (kernel[k] * cutarrayvec[k]/6 + kernely[k] * cutarrayvec[k]/6)/2;
+				sum += ((kernel[k] * cutarrayvec[k]/6) + (kernely[k] * cutarrayvec[k]/6))/2;
 			}
 			uchar pixVal = sum/2+127;
-			if (j == 5) {
-				cout << int(pixVal);
-				cout << "\n";
-			}
 			sum = 0;
 			cutarrayvec = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 			outImg[j][i] = pixVal;
