@@ -30,7 +30,7 @@ int getOneImage() {
 	return 0;
 }
 
-void Billedlaeser(string Imname) {
+Mat Billedlaeser(string Imname) {
 	
 	cout << "Hej\n";
 	string image_path = samples::findFile(Imname);
@@ -42,6 +42,7 @@ void Billedlaeser(string Imname) {
 		//return 1;
 	}
 
+
 	imshow("Display window", img);
 	int k = waitKey(0); // Wait for a keystroke in the window
 	if (k == 's')
@@ -49,9 +50,7 @@ void Billedlaeser(string Imname) {
 		imwrite("starry_night.png", img);
 
 	}
-
-
-
+	return img;
 }
 
 int largest(int arr[], int n)
@@ -298,3 +297,64 @@ Mat& LPFilter(Mat& Img) {
 
 }
 */
+
+int lowPassFilter(Mat img, int n, int p) { 
+	int ksize = n;
+	GrayScaleCal(img);
+	Mat resized_down;
+	resize(img, resized_down, Size(640, 480), INTER_LINEAR);
+	cv::imshow("grayIm", resized_down);
+	int k = waitKey(0);
+	//double outImg[638][478] = { 0 };
+	uchar outImg[478][638] = {0};
+	for (int i = 0+ksize; i < 640-ksize; i++) {
+		for (int j = 0+ksize; j < 480-ksize; j++) {
+			double pixVal = sum(resized_down(Range(j - ksize, j + ksize), Range(i - ksize, i + ksize)))[0] / pow(2*n+1,2);
+			outImg[j][i] = pixVal;
+		}
+	}
+	Mat outMatImg = Mat(478, 638, CV_8UC1, &outImg);
+	cv::imshow("averaged img", outMatImg);
+	int k2 = waitKey(0);
+	return 1;
+}
+
+int highPassFilter(Mat img) {
+	GrayScaleCal(img);
+	Mat_<uchar> resized_down;
+	resize(img, resized_down, Size(640, 480), INTER_LINEAR);
+	std::vector<int> kernel = { -1, 0, 1, -1, 0, 1, -1, 0, 1 };
+	std::vector<int> kernely = { 1, 1, 1, 0, 0, 0, -1, -1, -1 };
+	std::vector<uchar> cutarrayvec = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+	cv::imshow("grayIm", resized_down);
+	int k = waitKey(0);
+	uchar outImg[478][638] = { 0 };
+	int sum = 0;
+	for (int i = 0 + 3; i < 640 - 3; i++) {
+		for (int j = 0 + 3; j < 480 - 3; j++) {
+			Mat_<uchar> cutarray = resized_down(Range(j - 2, j + 1), Range(i - 2, i + 1));
+			int count = 0;
+			for (int k = 0; k < 3; k++) {
+				for (int p = 0; p < 3; p++) {
+					cutarrayvec[count] = (uchar)cutarray.at<uchar>(p, k);
+					count++;
+				}
+			}
+			for (int k = 0; k < 9; k++) {
+				sum = sum + (kernel[k] * cutarrayvec[k]/6 + kernely[k] * cutarrayvec[k]/6)/2;
+			}
+			uchar pixVal = sum/2+127;
+			if (j == 5) {
+				cout << int(pixVal);
+				cout << "\n";
+			}
+			sum = 0;
+			cutarrayvec = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			outImg[j][i] = pixVal;
+		}
+	}
+	Mat outMatImg = Mat(478, 638, CV_8UC1, &outImg);
+	cv::imshow("averaged img", outMatImg);
+	int k2 = waitKey(0);
+	return 1;
+}

@@ -26,13 +26,15 @@ struct ImOpj {
 using namespace std;
 using namespace cv;
 void helloWorld();
-void Billedlaeser(string Imname);
+Mat Billedlaeser(string Imname);
 int largest(int arr[], int n);
 void CaldrawHistogram(Mat& I);
 void COMImgCal(Mat& Img);
 void DrawX(Mat img, int x, int y, int offset);
 void MyLine(Mat img, Point start, Point end);
-int getOneImage();
+//int getOneImage();
+int lowPassFilter(Mat img, int n, int p);
+int highPassFilter(Mat img);
 
 Mat& GrayScaleCal(Mat& Img);
 Mat& BinaryMaker(Mat& I, int T);
