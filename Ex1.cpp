@@ -317,7 +317,7 @@ int lowPassFilter(Mat img, int n, int p) {
 	cv::imshow("averaged img", outMatImg);
 	int k2 = waitKey(0);
 	return 1;
-}
+}	
 
 int highPassFilter(Mat img) {
 	GrayScaleCal(img);
